@@ -6,5 +6,4 @@ files = sys.argv[1:]
 
 for file in files:
     fileTranslation = translate.translateFile(file)
-    print(fileTranslation)
     img.createFileImage(fileTranslation)
