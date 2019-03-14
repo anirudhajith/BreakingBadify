@@ -1,15 +1,14 @@
-from sys import argv
 import csv
 
-def getSymbolList():
+def getSymbolSet():
 
-    symbolList = []
+    symbolSet = set()
 
     with open('res/elementList.csv', mode='r') as elementFile:
         reader = csv.reader(elementFile)
-        symbolList = [row[1] for row in reader]
+        symbolSet = {row[1] for row in reader}
     
-    return symbolList
+    return symbolSet
 
 def getWordArray(textString):
     
@@ -30,19 +29,44 @@ def getWordArray(textString):
     return wordList
 
 def translateWord(word):
-    
-    symbolList = getSymbolList()
+
+    word = word.lower()
+    symbolSet = getSymbolSet()
     translation = []
 
-    # TODO: Code algorithm for word translation
+    if word[0:2] in symbolSet:
+        translation.append(word[0,2].title())
+    else:
+        if word[0] in symbolSet:
+            translation.append(word[0].title())
+        else:
+            translation.append(word[0])
+        
+        if word[1] in symbolSet:
+            translation.append(word[1].title())
+        else:
+            translation.append(word[1])
 
+    for i in range(2, len(word)):
+        if word[i-1 : i+1] in symbolSet:
+            if len(translation[-1]) == 1:
+                translation.pop()
+                translation.append(word[i-1 : i+1].title())
+        else if word[i] in symbolSet:
+            translation.append(word[i].title())
+        else:
+            translation.append(word[i])
+    
     return translation
 
-fileNames = argv[1:]
-
-for fileName in fileNames:
+def translateFile(fileName):
     lines = open(fileName).readlines()
     
+    fileTranslation = []
+
     for line in lines:
         words = getWordArray(line)
-
+        lineTranslation = [translateWord(word) for word in words]
+        fileTranslation.append(lineTranslation)
+    
+    return lineTranslation
