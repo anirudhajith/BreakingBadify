@@ -1,6 +1,13 @@
 import csv
 
 def getSymbolSet():
+    """ 
+    Retrieves set of symbols of chemical elements from res/elementList.csv.
+  
+    Returns: 
+    set: set of symbols of chemical elements
+  
+    """
 
     symbolSet = set()
 
@@ -11,6 +18,16 @@ def getSymbolSet():
     return symbolSet
 
 def getWordArray(textString):
+    """ 
+    Returns a list of words after processing input string.
+  
+    Parameters: 
+    textString (string): textString to be split into words 
+  
+    Returns: 
+    list: list of words obtained by splitting textString 
+  
+    """
     
     wordList = []
     newWord = True
@@ -26,40 +43,74 @@ def getWordArray(textString):
             else:
                 newWord = True
     
+    wordList = [word.lower() for word in wordList]
+
     return wordList
 
 def translateWord(word):
+    """ 
+    Converts word into its chemical element translation.
+  
+    Parameters: 
+    word (string): Word which has to be translated
 
-    word = word.lower()
+    Returns: 
+    list: containing the individual elements which make up the word 
+  
+    """
+
     symbolSet = getSymbolSet()
     translation = []
 
-    if word[0:2] in symbolSet:
-        translation.append(word[0,2].title())
-    else:
-        if word[0] in symbolSet:
-            translation.append(word[0].title())
-        else:
-            translation.append(word[0])
-        
-        if word[1] in symbolSet:
-            translation.append(word[1].title())
-        else:
-            translation.append(word[1])
+    if len(word) > 1:
 
-    for i in range(2, len(word)):
-        if word[i-1 : i+1] in symbolSet:
-            if len(translation[-1]) == 1:
-                translation.pop()
-                translation.append(word[i-1 : i+1].title())
-        else if word[i] in symbolSet:
-            translation.append(word[i].title())
+        if word[0:2].title() in symbolSet:
+            translation.append(word[0:2].title())
         else:
-            translation.append(word[i])
+            if word[0].title() in symbolSet:
+                translation.append(word[0].title())
+            else:
+                translation.append(word[0])
+            
+            if word[1].title() in symbolSet:
+                translation.append(word[1].title())
+            else:
+                translation.append(word[1])
+
+        for i in range(2, len(word)):
+            if word[i-1 : i+1].title() in symbolSet:
+                if len(translation[-1]) == 1:
+                    translation.pop()
+                    translation.append(word[i-1 : i+1].title())
+                else:
+                    if word[i].title() in symbolSet:
+                        translation.append(word[i].title())
+                    else:
+                        translation.append(word[i])      
+            elif word[i].title() in symbolSet:
+                translation.append(word[i].title())
+            else:
+                translation.append(word[i])
+    else:
+        if word in symbolSet:
+            translation.append(word.title())
+        else:
+            translation.append(word)
     
     return translation
 
 def translateFile(fileName):
+    """ 
+    Returns a nested list representing the chemical element translation of a file.
+  
+    Parameters: 
+    fileName (string): Name of file to be read 
+  
+    Returns: 
+    list: A nested list representing the chemical element translation of a file
+  
+    """
+
     lines = open(fileName).readlines()
     
     fileTranslation = []
@@ -68,5 +119,5 @@ def translateFile(fileName):
         words = getWordArray(line)
         lineTranslation = [translateWord(word) for word in words]
         fileTranslation.append(lineTranslation)
-    
-    return lineTranslation
+
+    return fileTranslation
