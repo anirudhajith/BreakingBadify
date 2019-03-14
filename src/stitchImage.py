@@ -29,8 +29,9 @@ def createFileImage(fileTranslation):
             filePath = "out/" + "".join(wordTranslation) + ".png"
             createWordImage(wordTranslation).save(filePath, "PNG")
             html = html + "<img src='" + filePath + "'>"
-            html = html + "<img src='src/space.png'>"
+            html = html + "<img src='res/tiles/space.png'>"
     html = html + "</body></html>"
     file = open("index.html","w")
     file.write(html)
-    file.close()         
+    file.close()
+    print("index.html is generated")         
