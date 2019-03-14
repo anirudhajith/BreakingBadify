@@ -23,6 +23,14 @@ def createWordImage(wordTranslation):
 
 
 def createFileImage(fileTranslation):
+    html = "<html><head><title>Breaking Bad-ify</title></head><body>"
     for lineTranslation in fileTranslation:
         for wordTranslation in lineTranslation:
-            createWordImage(wordTranslation).save("out/" + "".join(wordTranslation) + ".png", "PNG")
+            filePath = "out/" + "".join(wordTranslation) + ".png"
+            createWordImage(wordTranslation).save(filePath, "PNG")
+            html = html + "<img src='" + filePath + "'>"
+            html = html + "<img src='src/space.png'>"
+    html = html + "</body></html>"
+    file = open("index.html","w")
+    file.write(html)
+    file.close()         
